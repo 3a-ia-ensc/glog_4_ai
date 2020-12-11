@@ -117,7 +117,8 @@ def metrics_analysis(predictions, labels):
 
     for i in range(len(classes)):
         for j in range(len(classes)):
-            confusion[j, i] = np.sum(((predictions == classes[i]) & (labels == classes[j])))
+            #confusion[j, i] = np.sum(((predictions == classes[i]) & (labels == classes[j])))
+            confusion[j, i] = np.sum(((predictions == i) & (labels == j)))
 
     accuracy = np.diag(confusion).sum() / confusion.sum()
 
@@ -169,7 +170,7 @@ def multiple_roc_curves(df_data, predictions_prob):
     thresh = {}
 
     for cl in classes:
-        fpr[cl], tpr[cl], thresh[cl] = roc_curve(df_data['intent'], df_results['prob_' + cl], pos_label=cl)
+        #fpr[cl], tpr[cl], thresh[cl] = roc_curve(df_data['intent'], df_results['prob_' + cl], pos_label=cl)
 
         y_pred = df_results[cl]
         y_true = df_data['intent'] == cl

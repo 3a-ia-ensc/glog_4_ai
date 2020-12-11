@@ -37,8 +37,8 @@ def balance(data):
 def to_one_hot(data):
     """ Convert data to one hot vectors
     """
-    indices = np.unique(data, return_inverse=True)[1]
-    return to_categorical(indices)
+    labels, indices = np.unique(data, return_inverse=True)
+    return data, to_categorical(indices)
 
 
 def cut_data(sentences, labels, frac=0.25):

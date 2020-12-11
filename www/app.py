@@ -20,7 +20,7 @@ __status__ = "Development"
 
 
 app = Flask(__name__)
-model = load_model('simple_model')
+#model = load_model('model_11_12_2020.hdf5')
 
 
 @app.route('/')
@@ -37,8 +37,9 @@ def _get_intent():
     """
     to_send = request.args.get('sentence')
 
-    vec = vectorize_data([to_send])
-    prediction = model.predict([vec])
+    #vec = vectorize_data([to_send])
+    #prediction = model.predict([vec])
+    #print(prediction)
     """prediction = model.predict([to_send])
     print(prediction)
     to_send =  jsonify({"intent": prediction[0]})"""

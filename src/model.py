@@ -13,10 +13,12 @@ __email__ = "gnativ910e@ensc.fr"
 __status__ = "Development"
 
 import tensorflow as tf
-from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Dense, Input
+from tensorflow.keras import Model
+import tensorflow_addons as tfa
 
 
-class Model:
+class NlpModel:
     def __init__(self, input_dim):
         self._model = self._build_model(input_dim)
 
@@ -26,10 +28,12 @@ class Model:
         Parameters:
         input_dim (int): dimension of the input
         """
-        model = tf.keras.Sequential()
-        model.add(Dense(100, input_dim=input_dim, activation='relu'))
-        model.add(Dense(50, input_dim=input_dim, activation='relu'))
-        model.add(Dense(8, activation='softmax'))
+        input_net = Input(shape=(input_dim))
+        d1 = Dense(100, activation='relu')(input_net)
+        d2 = Dense(50, activation='relu')(d1)
+        out = Dense(8, activation='softmax')(d2)
+
+        model = Model(input_net, out)
 
         model.compile(loss='categorical_crossentropy',
                       optimizer='adam',
@@ -53,9 +57,14 @@ class Model:
                                   validation_data=(x_test, y_test),
                                   batch_size=10)
 
+        return history
+
     def evaluate(self, x, y):
         loss, accuracy = self._model.evaluate(x, y, verbose=False)
         print("Accuracy: {:.4f}".format(accuracy))
+
+    def predict(self, x):
+        return self._model.predict(x)
 
     def summary(self):
         print(self._model.summary())
@@ -67,7 +76,6 @@ def load_model(name):
     Parameters:
     name (string): name of the model to retrieve
     """
-
     return tf.keras.models.load_model(f'../models/{name}')
 
 """
