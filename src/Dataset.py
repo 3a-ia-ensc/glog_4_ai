@@ -26,7 +26,7 @@ class Dataset:
     def __init__(self, path_train, path_test):
         self._test = pd.read_json(path_test)
         self._train = pd.read_json(path_train)
-        self._data = pd.concat([self._train, self._test], keys=[range(0, self.__len__())])
+        self._data = pd.concat([self._train, self._test], ignore_index=True)
 
         print(f'Loaded {self.__len__()} rows')
 
