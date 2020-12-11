@@ -54,7 +54,6 @@ def cut_data(sentences, labels, frac=0.25):
 
 def vectorize_data(data):
     """ Split data into train set and test set
-
     Parameters:
     data (pandas.DataFrame): dataset
     """

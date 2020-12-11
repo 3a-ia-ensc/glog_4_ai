@@ -1,0 +1,90 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Documentation de l'API",
+    "version": "1.0.0",
+    "title": "Idiwii"
+  },
+  "host": "localhost:5000",
+  "basePath": "/api",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/intent": {
+      "get": {
+        "tags": [
+          "intent"
+        ],
+        "summary": "Retourne les probabilité d'appartenance aux intent",
+        "description": "Retourne les probabilité d'appartenance aux intent",
+        "operationId": "get",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "sentence",
+            "in": "query",
+            "description": "Phrase à classifier",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Response"
+            }
+          },
+          "405": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Response": {
+      "type": "object",
+      "properties": {
+        "find-train": {
+          "type": "number",
+          "format": "double"
+        },
+        "irrelevant": {
+          "type": "number",
+          "format": "double"
+        },
+        "find-flight": {
+          "type": "number",
+          "format": "double"
+        },
+        "find-restaurant": {
+          "type": "number",
+          "format": "double"
+        },
+        "purchase": {
+          "type": "number",
+          "format": "double"
+        },
+        "find-around-me": {
+          "type": "number",
+          "format": "double"
+        },
+        "provide-showtimes": {
+          "type": "number",
+          "format": "double"
+        },
+        "find-hotel": {
+          "type": "number",
+          "format": "double"
+        }
+      },
+      "xml": {
+        "name": "Response"
+      }
+    }
+  }
+}

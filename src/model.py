@@ -46,14 +46,6 @@ class Model:
         """
         self._model.save(f'../models/{name}')
 
-    def load_model(self, name):
-        """ Load a saved model
-
-        Parameters:
-        name (string): name of the model to retrieve
-        """
-        self._model = tf.keras.models.load_model(f'../models/{name}')
-
     def train(self, x_train, y_train, x_test, y_test, verbose=False):
         history = self._model.fit(x_train, y_train,
                                   epochs=100,
@@ -68,6 +60,15 @@ class Model:
     def summary(self):
         print(self._model.summary())
 
+
+def load_model(name):
+    """ Load a saved model
+
+    Parameters:
+    name (string): name of the model to retrieve
+    """
+
+    return tf.keras.models.load_model(f'../models/{name}')
 
 """
 def logistic():
