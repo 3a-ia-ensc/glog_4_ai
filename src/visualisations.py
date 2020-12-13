@@ -67,7 +67,7 @@ def display_box_plot_nb_words(dataset:pd.DataFrame) -> None:
 
     fig.show()
 
-def multiple_prediction(url_model:string, df_data:pd.DataFrame) -> tuple:
+def multiple_prediction(url_model:str, df_data:pd.DataFrame) -> tuple:
     """Call the API to get the model predictions for the data frame sentences.
 
     Parameters:
@@ -98,7 +98,7 @@ def multiple_prediction(url_model:string, df_data:pd.DataFrame) -> tuple:
 
     return np.array(predictions), np.array(predictions_prob)
 
-def metrics_analysis(predictions:np.array, labels:np.array) -> None:
+def metrics_analysis(predictions:np.array, labels:np.array, classes) -> None:
     """Calculates accuracy, precision, recall and F-Score on the predictions made by the model
 
     Parameters:
@@ -108,6 +108,8 @@ def metrics_analysis(predictions:np.array, labels:np.array) -> None:
     """
     classes = ['find-train', 'irrelevant', 'find-flight', 'find-restaurant',
                'purchase', 'find-around-me', 'provide-showtimes', 'find-hotel']
+    classes = ['find-around-me', 'find-flight', 'find-hotel', 'find-restaurant',
+     'find-train', 'irrelevant', 'provide-showtimes', 'purchase']
 
     confusion = np.zeros((len(classes), len(classes)))
 
@@ -165,7 +167,7 @@ def multiple_roc_curves(df_data:pd.DataFrame, predictions_prob:np.array) -> None
     thresh = {}
 
     for cl in classes:
-        #fpr[cl], tpr[cl], thresh[cl] = roc_curve(df_data['intent'], df_results['prob_' + cl], pos_label=cl)
+        fpr[cl], tpr[cl], thresh[cl] = roc_curve(df_data['intent'], df_results['prob_' + cl], pos_label=cl)
 
         y_pred = df_results[cl]
         y_true = df_data['intent'] == cl

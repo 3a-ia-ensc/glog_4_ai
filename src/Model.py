@@ -95,5 +95,5 @@ class ModelCustom:
         """
         X = self._tokenizer.texts_to_sequences(X)
         X = tf.keras.preprocessing.sequence.pad_sequences(X, maxlen=MAX_SEQUENCE_LENGTH)
-        
+
         return self._model.predict(X)
