@@ -1,13 +1,10 @@
-FROM python:3.7-alpine
+FROM python:3.8
 
 RUN python -m pip install --upgrade pip
 
-RUN pip install tensorflow-serving-api
-
 COPY requirements.txt /
 RUN pip install -r /requirements.txt
-COPY src /app/src/data_processing.py
-COPY src /app/src/model.py
+COPY models /app/models
 COPY www /app/www
 
 EXPOSE 5000
