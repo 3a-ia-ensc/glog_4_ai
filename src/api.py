@@ -17,7 +17,16 @@ __email__ = "gnativ910e@ensc.fr"
 __status__ = "Development"
 
 
-def api_request(path, params):
+def api_request(path:string, params:dict) -> requests.Response:
+    """Create the request from given parameters
+
+    Parameters:
+    string: the path for the query ressource
+    dict: containing the request parameters and their given names
+
+    Return:
+    Response: the response to the request from the API path
+    """
     query = ''
     for key, value in params.items():
         query += key + '=' + value + '&'
@@ -27,9 +36,17 @@ def api_request(path, params):
     return r
 
 
-def predict(url, sentence):
+def predict(url:string, sentence:string) -> dict:
+    """Give the model predictions for a given sentence
+
+    Parameters:
+    string: the url for the api
+    string: the content sentence to be analized by the model
+
+    Return:
+    Response: outputs the json returned by the api as a dictionnary
+    """
     request = api_request(url, {'sentence': sentence})
     result = request.json()
-    
-    return result
 
+    return result
