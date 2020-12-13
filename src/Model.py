@@ -21,11 +21,14 @@ class ModelCustom:
         self._model = self._buildModel()
         self._tokenizer = None
 
-    def _buildModel(self):
+    def _buildModel(self) -> tf.keras.Model:
         """ Read multiple json files and concat them in a single DataFrame
 
         Parameters:
         tuple_files (tuple): path of the files
+
+        Returns:
+        Model : outputs a keras model to be used in production
         """
 
         input_model = Input(MAX_SEQUENCE_LENGTH)
@@ -39,12 +42,15 @@ class ModelCustom:
 
         return model
 
-    def train(self, X, Y):
+    def train(self, X:pd.DataFrame, Y:pd.DataFrame) -> tf.keras.callbacks.History:
         """ Train the model
 
         Parameters:
         X (pd.DataFrame): sentences to use for training
         Y (pd.DataFrame): labels to use for training
+
+        Returns:
+        keras hystory: Return the logs and data from the model training
         """
         self._tokenizer = Tokenizer(num_words=MAX_NB_WORDS, filters='!"#$%&()*+,-./:;<=>?@[\]^_`{|}~', lower=True)
         self._tokenizer.fit_on_texts(X)
@@ -65,7 +71,7 @@ class ModelCustom:
 
         return history
 
-    def evaluate(self, X, Y):
+    def evaluate(self, X:pd.DataFrame, Y:pd.DataFrame):
         """ Train the model
 
         Parameters:
@@ -87,13 +93,16 @@ class ModelCustom:
         """
         self._model.save(f'../models/model_{time.time()}.hdf5', overwrite=True, include_optimizer=True, save_format='h5')
 
-    def predict(self, X):
+    def predict(self, X:pd.DataFrame) -> np.array:
         """ Make a prediction
 
         Parameters:
         X (pd.DataFrame): sentences to use for prediction
+
+        Returns:
+        np.array: outpus the array of probability for prediction classes
         """
         X = self._tokenizer.texts_to_sequences(X)
         X = tf.keras.preprocessing.sequence.pad_sequences(X, maxlen=MAX_SEQUENCE_LENGTH)
-        
+
         return self._model.predict(X)
