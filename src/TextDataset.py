@@ -29,7 +29,7 @@ class TextDataset:
         _data (pandas.DataFrame): DataFrame containing the full set
     """
 
-    def __init__(self, json_files: str, x_col: str, y_col: str):
+    def __init__(self, json_files:str, x_col:str, y_col:str):
         self._data = self._read_json(json_files)
         self._labels = None
 
@@ -37,7 +37,7 @@ class TextDataset:
 
         print(f'Loaded {self.__len__()} rows')
 
-    def _read_json(self, tuple_files):
+    def _read_json(self, tuple_files:tuple) -> pd.DataFrame:
         """ Read multiple json files and concat them in a single DataFrame
 
         Parameters:
@@ -58,11 +58,14 @@ class TextDataset:
 
         self._data = pd.concat((self._data, pd.DataFrame(one_hot_values)), axis=1)
 
-    def _find_synonyms(self, word):
+    def _find_synonyms(self, word:str) -> list:
         """ Find the french synonyms of a given word
 
         Parameters:
         word (str): a word
+
+        Returns:
+        list: A list of synonyms of a given word
         """
         synonyms = []
         for synset in wordnet.synsets(word):
@@ -72,11 +75,14 @@ class TextDataset:
 
         return synonyms
 
-    def _synonym_replacement(self, sentence):
+    def _synonym_replacement(self, sentence:str) -> list:
         """ Build new sentenced by converting some words to there synonyms
 
         Parameters:
         sentence (str): a sentence
+
+        Returns:
+        list: Outputs a list of sentence with modified words
         """
         toknizer = RegexpTokenizer(r'''\w'|\w+|[^\w\s]''')
         words = toknizer.tokenize(sentence)
@@ -92,7 +98,7 @@ class TextDataset:
 
         return n_sentence
 
-    def augment_data(self):
+    def augment_data(self) -> pd.DataFrame:
         """ Augment the dataset
         """
         new_sentences = []
@@ -145,11 +151,14 @@ class TextDataset:
         self._data = balanced_data
         print(f'Dataset contains now {self.__len__()} rows')
 
-    def split_data(self, frac=0.2):
+    def split_data(self, frac=0.2:float) -> tuple:
         """ Split the dataset into training set and testing set
 
         Parameters:
         frac (double): the fraction of dataset to be used as test set
+
+        Returns:
+        tuple: outputs a tuple containing the train and the test dataset
         """
         df = self._data.sample(frac=1)
         size_train = int((1 - frac) * self.__len__())
