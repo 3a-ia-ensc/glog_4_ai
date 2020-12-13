@@ -27,24 +27,21 @@ __email__ = "gnativ910e@ensc.fr"
 __status__ = "Development"
 
 
-def histogram_intents(dataset):
+def histogram_intents(dataset:pd.DataFrame) -> None:
     """Displays the distribution of sentences in each intents
 
     Parameters:
     dataset (pandas.DataFrame): The dataframe containing intents and sentences
-
     """
     fig = px.histogram(dataset, x='intent', template='plotly_white', title='Sentence count by intent')
     fig.update_xaxes(categoryorder='total descending').update_yaxes(title='Number of sentences')
     fig.show()
 
-
-def words_by_sentences(dataset):
+def words_by_sentences(dataset:pd.DataFrame) -> None:
     """Displays the distribution of words in sentences
 
     Parameters:
     dataset (pandas.DataFrame): The dataframe containing intents and sentences
-
     """
     dataset['word_count'] = dataset['sentence'].str.findall(r'(\w+\'\w+)|(\w+)').str.len()
 
@@ -52,13 +49,11 @@ def words_by_sentences(dataset):
     fig.update_xaxes(categoryorder='total descending').update_yaxes(title='Number of sentences')
     fig.show()
 
-
-def display_box_plot_nb_words(dataset):
+def display_box_plot_nb_words(dataset:pd.DataFrame) -> None:
     """Displays the profil of words in intents
 
     Parameters:
     dataset (pandas.DataFrame): The dataframe containing intents and sentences
-
     """
     fig = go.Figure()
 
@@ -72,15 +67,17 @@ def display_box_plot_nb_words(dataset):
 
     fig.show()
 
-
-def multiple_prediction(url_model, df_data):
+def multiple_prediction(url_model:string, df_data:pd.DataFrame) -> tuple:
     """Call the API to get the model predictions for the data frame sentences.
 
     Parameters:
     url_model (str): API url
     df_data (pandas.DataFrame): The dataframe containing intents and sentences
 
-   """
+    Returns:
+    np array: The predicted values
+    np array: The prediction pobabilities for each value
+    """
     f = FloatProgress(min=0, max=len(df_data))
     display(f)
 
@@ -101,8 +98,7 @@ def multiple_prediction(url_model, df_data):
 
     return np.array(predictions), np.array(predictions_prob)
 
-
-def metrics_analysis(predictions, labels):
+def metrics_analysis(predictions:np.array, labels:np.array) -> None:
     """Calculates accuracy, precision, recall and F-Score on the predictions made by the model
 
     Parameters:
@@ -147,8 +143,7 @@ def metrics_analysis(predictions, labels):
     metrics = pd.DataFrame([[accuracy], [precision], [rappel], [f_score]], index=['Accuracy', 'Precision', 'Recall', 'F-Score'])
     display(HTML(tabulate.tabulate(metrics, tablefmt='html')))
 
-
-def multiple_roc_curves(df_data, predictions_prob):
+def multiple_roc_curves(df_data:pd.DataFrame, predictions_prob:np.array) -> None:
     """Compute and display roc curve for each class
 
     Parameters:
@@ -196,8 +191,7 @@ def multiple_roc_curves(df_data, predictions_prob):
     )
     fig.show()
 
-
-def multiple_average_precision(df_data, predictions_prob):
+def multiple_average_precision(df_data:pd.DataFrame, predictions_prob:np.array) -> None:
     """Compute and display precision-recall curve for each class
 
     Parameters:
