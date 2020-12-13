@@ -52,6 +52,8 @@ def cut_data(sentences, labels, frac=0.25):
     return sentences_train, sentences_test, y_train, y_test
 
 
+['pr', 'grand', 'manger', 'train', 'Angers']
+
 def vectorize_data(data):
     """ Split data into train set and test set
     Parameters:
