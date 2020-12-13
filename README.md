@@ -22,8 +22,8 @@ Le dossier notebook contient les notebook nous ayant permis de répondre aux que
 ```shell
 $ git clone https://github.com/3a-ia-ensc/glog_4_ai 
 $ cd glog_4_ai 
-$ docker build --tag glog:1.0 .
-$ docker run --publish 5000:5000 --detach --name glog_container glog:1.0 
+$ docker build --tag projet-inge-log-4-ai:latest .
+$ docker run --publish 5000:5000 --detach --name projet-inge-log-4-ai:latest 
 ```
 
 L'API est maintenant accessible à l'adresse [http://localhost:5000/]( http://localhost:5000/)
@@ -33,8 +33,8 @@ L'API est maintenant accessible à l'adresse [http://localhost:5000/]( http://lo
 L'application est disponible sur DockerHub
 
 ```shell
-$ docker pull NAME:TAG
-$ docker run --publish 5000:5000 --detach --name glog_container glog:1.0  
+$ docker pull gabrielnativelfontaine/projet-inge-log-4-ai:latest
+$ docker run --publish 5000:5000 --detach --name gabrielnativelfontaine/projet-inge-log-4-ai:latest
 ```
 
 L'API est maintenant accessible à l'adresse [http://localhost:5000/]( http://localhost:5000/)

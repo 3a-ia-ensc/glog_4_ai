@@ -8,10 +8,6 @@ from json import dumps
 from flask import Flask, request, jsonify, render_template, Response
 import tensorflow as tf
 import pickle
-from tensorflow.keras.preprocessing.text import Tokenizer
-import tensorflow.keras.layers as tfl
-from src.data_processing import vectorize_data
-from src.modelnostrom import load_model
 
 __author__ = "Simon Audrix and Gabriel Nativel-Fontaine"
 __credits__ = ["Simon Audrix", "Gabriel Nativel-Fontaine"]
@@ -23,8 +19,6 @@ __status__ = "Development"
 
 
 app = Flask(__name__)
-#model = load_model('model_11_12_2020.hdf5')
-
 
 @app.route('/')
 def get_docs():

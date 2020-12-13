@@ -151,7 +151,7 @@ class TextDataset:
         self._data = balanced_data
         print(f'Dataset contains now {self.__len__()} rows')
 
-    def split_data(self, frac=0.2:float) -> tuple:
+    def split_data(self, frac=0.2) -> tuple:
         """ Split the dataset into training set and testing set
 
         Parameters:
