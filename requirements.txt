@@ -10,3 +10,5 @@ Flask~=1.1.2
 tensorflow~=2.3.1
 h5py~=2.10
 nltk~=3.5
+gevent~=20.9.0
+locust~=1.4.1

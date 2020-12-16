@@ -35,13 +35,14 @@ def _get_intent():
     to_send = request.args.get('sentence')
     MAX_SEQUENCE_LENGTH = 250
 
-    with open('../models/tokenizer.pickle', 'rb') as handle:
+    with open('models/tokenizer.pickle', 'rb') as handle:
         tokenizer = pickle.load(handle)
 
     une_phrase = tokenizer.texts_to_sequences([to_send])
     une_phrase = tf.keras.preprocessing.sequence.pad_sequences(une_phrase, maxlen=MAX_SEQUENCE_LENGTH)
 
-    model = tf.keras.models.load_model('../models/13_12_2020.hdf5', custom_objects=None, compile=True, options=None)
+    #model = tf.keras.models.load_model('models/13_12_2020.hdf5', custom_objects=None, compile=True, options=None)
+    model = tf.keras.models.load_model('models/best_model', custom_objects=None, compile=True, options=None)
     prediction = model.predict(une_phrase)[0]
 
     labels = ['find-around-me', 'find-flight', 'find-hotel', 'find-restaurant',
@@ -59,5 +60,5 @@ def _get_intent():
     return response
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
+#if __name__ == '__main__':
+#    app.run(debug=True)

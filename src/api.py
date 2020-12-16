@@ -17,7 +17,7 @@ __email__ = "gnativ910e@ensc.fr"
 __status__ = "Development"
 
 
-def api_request(path:string, params:dict) -> requests.Response:
+def api_request(path:str, params:dict) -> requests.Response:
     """Create the request from given parameters
 
     Parameters:
@@ -36,7 +36,7 @@ def api_request(path:string, params:dict) -> requests.Response:
     return r
 
 
-def predict(url:string, sentence:string) -> dict:
+def predict(url:str, sentence:str) -> dict:
     """Give the model predictions for a given sentence
 
     Parameters:

@@ -27,7 +27,7 @@ __email__ = "gnativ910e@ensc.fr"
 __status__ = "Development"
 
 
-def histogram_intents(dataset:pd.DataFrame) -> None:
+def histogram_intents(dataset: pd.DataFrame) -> None:
     """Displays the distribution of sentences in each intents
 
     Parameters:
@@ -37,7 +37,8 @@ def histogram_intents(dataset:pd.DataFrame) -> None:
     fig.update_xaxes(categoryorder='total descending').update_yaxes(title='Number of sentences')
     fig.show()
 
-def words_by_sentences(dataset:pd.DataFrame) -> None:
+
+def words_by_sentences(dataset: pd.DataFrame) -> None:
     """Displays the distribution of words in sentences
 
     Parameters:
@@ -49,7 +50,8 @@ def words_by_sentences(dataset:pd.DataFrame) -> None:
     fig.update_xaxes(categoryorder='total descending').update_yaxes(title='Number of sentences')
     fig.show()
 
-def display_box_plot_nb_words(dataset:pd.DataFrame) -> None:
+
+def display_box_plot_nb_words(dataset: pd.DataFrame) -> None:
     """Displays the profil of words in intents
 
     Parameters:
@@ -67,7 +69,8 @@ def display_box_plot_nb_words(dataset:pd.DataFrame) -> None:
 
     fig.show()
 
-def multiple_prediction(url_model:str, df_data:pd.DataFrame) -> tuple:
+
+def multiple_prediction(url_model: str, df_data: pd.DataFrame) -> tuple:
     """Call the API to get the model predictions for the data frame sentences.
 
     Parameters:
@@ -98,7 +101,8 @@ def multiple_prediction(url_model:str, df_data:pd.DataFrame) -> tuple:
 
     return np.array(predictions), np.array(predictions_prob)
 
-def metrics_analysis(predictions:np.array, labels:np.array, classes) -> None:
+
+def metrics_analysis(predictions: np.array, labels: np.array, cl:bool) -> None:
     """Calculates accuracy, precision, recall and F-Score on the predictions made by the model
 
     Parameters:
@@ -106,17 +110,19 @@ def metrics_analysis(predictions:np.array, labels:np.array, classes) -> None:
     labels (array): Table of real labels
 
     """
-    classes = ['find-train', 'irrelevant', 'find-flight', 'find-restaurant',
-               'purchase', 'find-around-me', 'provide-showtimes', 'find-hotel']
-    classes = ['find-around-me', 'find-flight', 'find-hotel', 'find-restaurant',
-     'find-train', 'irrelevant', 'provide-showtimes', 'purchase']
+    if cl:
+        classes = ['find-around-me', 'find-flight', 'find-hotel', 'find-restaurant',
+                   'find-train', 'irrelevant', 'provide-showtimes', 'purchase']
+    else:
+        classes = ['find-train', 'irrelevant', 'find-flight', 'find-restaurant',
+                   'purchase', 'find-around-me', 'provide-showtimes', 'find-hotel']
 
     confusion = np.zeros((len(classes), len(classes)))
 
     for i in range(len(classes)):
         for j in range(len(classes)):
-            #confusion[j, i] = np.sum(((predictions == classes[i]) & (labels == classes[j])))
-            confusion[j, i] = np.sum(((predictions == i) & (labels == j)))
+            if not cl: confusion[j, i] = np.sum(((predictions == classes[i]) & (labels == classes[j])))
+            else: confusion[j, i] = np.sum(((predictions == i) & (labels == j)))
 
     accuracy = np.diag(confusion).sum() / confusion.sum()
 
@@ -142,18 +148,24 @@ def metrics_analysis(predictions:np.array, labels:np.array, classes) -> None:
     table = pd.DataFrame(table, index=classes)
     display(HTML(tabulate.tabulate(table, tablefmt='html', headers=classes)))
 
-    metrics = pd.DataFrame([[accuracy], [precision], [rappel], [f_score]], index=['Accuracy', 'Precision', 'Recall', 'F-Score'])
+    metrics = pd.DataFrame([[accuracy], [precision], [rappel], [f_score]],
+                           index=['Accuracy', 'Precision', 'Recall', 'F-Score'])
     display(HTML(tabulate.tabulate(metrics, tablefmt='html')))
 
-def multiple_roc_curves(df_data:pd.DataFrame, predictions_prob:np.array) -> None:
+
+def multiple_roc_curves(df_data: pd.DataFrame, predictions_prob: np.array, cl: bool) -> None:
     """Compute and display roc curve for each class
 
     Parameters:
     predictions_prob (array): Table of predictions (must contain probability for each class)
 
     """
-    classes = ['find-train', 'irrelevant', 'find-flight', 'find-restaurant',
-               'purchase', 'find-around-me', 'provide-showtimes', 'find-hotel']
+    if not cl:
+        classes = ['find-train', 'irrelevant', 'find-flight', 'find-restaurant',
+                   'purchase', 'find-around-me', 'provide-showtimes', 'find-hotel']
+    else:
+        classes = ['find-around-me', 'find-flight', 'find-hotel', 'find-restaurant',
+                   'find-train', 'irrelevant', 'provide-showtimes', 'purchase']
 
     df_results = pd.DataFrame()
     for i in range(len(classes)):
@@ -170,7 +182,7 @@ def multiple_roc_curves(df_data:pd.DataFrame, predictions_prob:np.array) -> None
         fpr[cl], tpr[cl], thresh[cl] = roc_curve(df_data['intent'], df_results['prob_' + cl], pos_label=cl)
 
         y_pred = df_results[cl]
-        y_true = df_data['intent'] == cl
+        y_true = df_results['prob_' + cl] > 0.5
         auc[cl] = roc_auc_score(y_true, y_pred)
 
     fig = go.Figure()
@@ -193,7 +205,8 @@ def multiple_roc_curves(df_data:pd.DataFrame, predictions_prob:np.array) -> None
     )
     fig.show()
 
-def multiple_average_precision(df_data:pd.DataFrame, predictions_prob:np.array) -> None:
+
+def multiple_average_precision(df_data: pd.DataFrame, predictions_prob: np.array) -> None:
     """Compute and display precision-recall curve for each class
 
     Parameters:
@@ -245,3 +258,29 @@ def multiple_average_precision(df_data:pd.DataFrame, predictions_prob:np.array) 
         width=700, height=500
     )
     fig.show()
+
+
+def wrong_predictions(predictions: np.array, prob: np.array, true_labels: np.array, data: pd.DataFrame) -> np.array:
+    """Return the sentences with bad predictions
+    """
+
+    def set_class(x):
+        classes = ['find-around-me', 'find-flight', 'find-hotel', 'find-restaurant',
+                   'find-train', 'irrelevant', 'provide-showtimes', 'purchase']
+
+        return classes[x]
+
+    best_prob = np.max(prob, axis=1)
+    wrong_idx = predictions != true_labels
+    wrong_pred = data[wrong_idx]
+    prob_wrong = best_prob[wrong_idx]
+    wrong_labels = predictions[wrong_idx]
+    wrong_labels = np.array(list(map(set_class, wrong_labels)))
+
+    d = wrong_pred.copy()
+    d['wrong'] = wrong_labels
+    d['prob'] = prob_wrong
+
+    idx = d['prob'] > 0.85
+
+    return d[idx]

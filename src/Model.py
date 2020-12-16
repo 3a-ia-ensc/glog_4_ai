@@ -1,9 +1,17 @@
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import pickle
 import time
+import pandas as pd
+import numpy as np
 import tensorflow as tf
+tf.get_logger().setLevel('INFO')
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.layers import Input, Embedding, SpatialDropout1D, LSTM, Dense
 from tensorflow.keras.callbacks import EarlyStopping
+import tensorflow.python.util.deprecation as deprecation
+deprecation._PRINT_DEPRECATION_WARNINGS = False
+
 
 MAX_NB_WORDS = 50000
 MAX_SEQUENCE_LENGTH = 250
@@ -58,18 +66,24 @@ class ModelCustom:
         X = self._tokenizer.texts_to_sequences(X)
         X = tf.keras.preprocessing.sequence.pad_sequences(X, maxlen=MAX_SEQUENCE_LENGTH)
 
-        epochs = 5
+        epochs = 15
         batch_size = 64
+        checkpoint = tf.keras.callbacks.ModelCheckpoint('../models/best_model',
+                                                        monitor='val_accuracy',
+                                                        save_best_only=True,
+                                                        verbose=0)
         history = self._model.fit(X, Y,
+                                  verbose=2,
                                   epochs=epochs,
                                   batch_size=batch_size,
                                   validation_split=0.1,
-                                  callbacks=[EarlyStopping(monitor='val_loss', patience=3, min_delta=0.0001)])
+                                  callbacks=[
+                                    EarlyStopping(monitor='val_loss', patience=3, min_delta=0.0001),
+                                    checkpoint
+                                  ])
 
         with open('../models/tokenizer.pickle', 'wb') as handle:
             pickle.dump(self._tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
-
-        return history
 
     def evaluate(self, X:pd.DataFrame, Y:pd.DataFrame):
         """ Train the model

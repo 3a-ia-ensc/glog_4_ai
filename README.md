@@ -10,8 +10,8 @@ Il a été réalisé dans le cadre du module **Ingéniérie logicielle pour l'IA
 
 Le dossier notebook contient les notebook nous ayant permis de répondre aux questions posées pour ce projet:
 
-- Analyses de l'existant.ipynb répond aux questions sur l'analyse du modèle précédent (Exercices 1 & 2)
-- Un nouveau modèle.ipynb répond présente notre démarche de création d'un nouveau modèle et la comparaison avec le modèle précédent (Exercice 3)
+- [Analyse de l'existant](https://github.com/3a-ia-ensc/glog_4_ai/blob/main/notebooks/html/Analyses%20de%20l'existant.html) répond aux questions sur l'analyse du modèle précédent (Exercices 1 & 2)
+- [Création d'un modèle](https://github.com/3a-ia-ensc/glog_4_ai/blob/main/notebooks/html/Création%20d'un%20modèle.html) répond présente notre démarche de création d'un nouveau modèle et la comparaison avec le modèle précédent (Exercice 3)
 - L'API et sa documentation sont disponibles à l'addresse http://localhost:5000/ et le test de montée en charge est présenté plus bas dans ce README (Exercice 4)
 - Un dockerfile est présent dans ce dépôt, l'image a également été placée sur DockerHub (Exercice 5)
 
@@ -41,9 +41,13 @@ L'API est maintenant accessible à l'adresse [http://localhost:5000/]( http://lo
 
 ## Tests de montée en charge
 
-```shell
+Le script suivant permet de lancer des tests de montée en charge sur l'application
 
+```shell
+$ locust -f test_locust.py
 ```
+
+
 
 # REST API
 
