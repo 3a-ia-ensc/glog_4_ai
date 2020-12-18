@@ -12,3 +12,4 @@ h5py~=2.10
 nltk~=3.5
 gevent~=20.9.0
 locust~=1.4.1
+gunicorn~=20.0.4
