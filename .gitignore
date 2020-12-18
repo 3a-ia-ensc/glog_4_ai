@@ -1,9 +1,6 @@
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
 
-assets
-variables
-best_model
 
 MANIFEST
 build
