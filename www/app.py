@@ -3,15 +3,13 @@
 """ app.py
 Create a web app to serve the model
 """
-import threading
-import time
-from queue import Empty, Queue
-from json import dumps
-import numpy as np
-import flask
 import os
-from flask import Flask, request, jsonify, render_template, Response
+from json import dumps
+
+import flask
 import tensorflow as tf
+from flask import Flask, render_template
+
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import pickle
 
@@ -28,46 +26,16 @@ BATCH_SIZE = 20
 BATCH_TIMEOUT = 0.5
 CHECK_INTERVAL = 0.01
 
-requests_queue = Queue()
-
-
-def handle_requests_by_batch():
-    while True:
-        requests_batch = []
-        while not (
-                len(requests_batch) > BATCH_SIZE or
-                (len(requests_batch) > 0 and time.time() - requests_batch[0]['time'] > BATCH_TIMEOUT)
-        ):
-            try:
-                requests_batch.append(requests_queue.get(timeout=CHECK_INTERVAL))
-            except Empty:
-                continue
-
-        batch_inputs = np.empty([0, 250])
-        for request in requests_batch:
-            batch_inputs = np.concatenate((batch_inputs, request['input']), axis=0)
-
-        #print(batch_inputs.shape)
-        batch_outputs = model.predict(batch_inputs)
-        #print(batch_inputs.shape)
-        for request, output in zip(requests_batch, batch_outputs):
-            request['output'] = output
-
-
-threading.Thread(target=handle_requests_by_batch).start()
-
 app = Flask(__name__)
 model = tf.keras.models.load_model('models/best_model', custom_objects=None, compile=True, options=None)
 
-@tf.function
-def predict(une_phrase):
-    prediction = model.predict(une_phrase)[0]
 
 @app.route('/')
 def get_docs():
     """Index endpoint, display the documentation api
     """
     return render_template('swaggerui.html')
+
 
 @app.route('/api/intent')
 def _get_intent():
@@ -83,19 +51,12 @@ def _get_intent():
     une_phrase = tokenizer.texts_to_sequences([to_send])
     une_phrase = tf.keras.preprocessing.sequence.pad_sequences(une_phrase, maxlen=MAX_SEQUENCE_LENGTH)
 
-    request = {'input': une_phrase, 'time': time.time()}
-    requests_queue.put(request)
-
-    while 'output' not in request:
-        time.sleep(CHECK_INTERVAL)
-
-    # prediction = model.predict(une_phrase)[0]
+    prediction = model.predict(une_phrase)[0]
 
     labels = ['find-around-me', 'find-flight', 'find-hotel', 'find-restaurant',
               'find-train', 'irrelevant', 'provide-showtimes', 'purchase']
 
     dict_to_show = {}
-    prediction = request['output']
 
     for i in range(8):
         dict_to_show[labels[i]] = str(prediction[i])
@@ -107,6 +68,5 @@ def _get_intent():
     return response
 
 
-
-#if __name__ == '__main__':
-#    app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)
