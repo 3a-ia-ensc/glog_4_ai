@@ -9,9 +9,12 @@ from queue import Empty, Queue
 from json import dumps
 import numpy as np
 import flask
+import os
 from flask import Flask, request, jsonify, render_template, Response
 import tensorflow as tf
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import pickle
+
 
 __author__ = "Simon Audrix and Gabriel Nativel-Fontaine"
 __credits__ = ["Simon Audrix", "Gabriel Nativel-Fontaine"]
@@ -26,6 +29,7 @@ BATCH_TIMEOUT = 0.5
 CHECK_INTERVAL = 0.01
 
 requests_queue = Queue()
+
 
 def handle_requests_by_batch():
     while True:
@@ -65,7 +69,6 @@ def get_docs():
     """
     return render_template('swaggerui.html')
 
-from urllib.parse import unquote
 @app.route('/api/intent')
 def _get_intent():
     """Makes a prediction on the received sentence as a parameter and returns the probability of belonging
@@ -79,7 +82,7 @@ def _get_intent():
 
     une_phrase = tokenizer.texts_to_sequences([to_send])
     une_phrase = tf.keras.preprocessing.sequence.pad_sequences(une_phrase, maxlen=MAX_SEQUENCE_LENGTH)
-    #print(une_phrase.shape)
+
     request = {'input': une_phrase, 'time': time.time()}
     requests_queue.put(request)
 
